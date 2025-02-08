@@ -10,7 +10,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0"
 }
 
-group = "com.example"
+group = "app.flock.social"
 version = "0.0.1"
 
 kotlin {
