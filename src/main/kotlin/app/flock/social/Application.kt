@@ -2,6 +2,8 @@ package app.flock.social
 
 import app.flock.social.data.dao.DatabaseFactory
 import app.flock.social.plugins.*
+import app.flock.social.stripe.StripeConfig
+import app.flock.social.util.EnvConfig
 import io.ktor.server.application.*
 
 fun main(args: Array<String>): Unit =
@@ -19,6 +21,7 @@ fun Application.module() {
     configureSerialization()
     configureRouting()
     configureSwagger()
+    StripeConfig.initialize(EnvConfig.stripeSK)
 }
 
 

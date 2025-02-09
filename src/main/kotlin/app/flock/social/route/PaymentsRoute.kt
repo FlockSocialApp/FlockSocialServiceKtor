@@ -25,7 +25,9 @@ data class PaymentResponse(
     val error: String? = null
 )
 
-fun Route.paymentRoutes(stripeService: StripeService) {
+fun Route.paymentRoutes(
+    stripeService: StripeService = StripeService()
+) {
     route("/payments") {
         get("/hello") {
             call.respond("Hello World")
