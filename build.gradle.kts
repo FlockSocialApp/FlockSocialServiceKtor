@@ -3,7 +3,9 @@ val kotlin_version: String by project
 val logback_version: String by project
 val exposed_version: String by project
 val h2_version: String by project
-val swagger_ui_version:String by project
+val swagger_ui_version: String by project
+val stripe_version: String by project
+
 plugins {
     kotlin("jvm") version "1.9.0"
     id("io.ktor.plugin") version "2.3.2"
@@ -25,7 +27,7 @@ application {
 
 repositories {
     mavenCentral()
-        maven { url= uri("https://jitpack.io") }
+    maven { url = uri("https://jitpack.io") }
 
 }
 
@@ -35,7 +37,7 @@ dependencies {
     implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-cors-jvm:$ktor_version")
     implementation("io.ktor:ktor-serialization-jackson:$ktor_version")
-    implementation ("io.github.smiley4:ktor-swagger-ui:$swagger_ui_version")
+    implementation("io.github.smiley4:ktor-swagger-ui:$swagger_ui_version")
     implementation("org.slf4j:slf4j-simple:2.0.6")
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
@@ -50,6 +52,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    implementation("com.stripe:stripe-java:$stripe_version")
 }
 
 
@@ -61,7 +64,7 @@ tasks.getByName("build").finalizedBy("installDist")
 tasks.withType<Jar> {
     // Otherwise you'll get a "No main manifest attribute" error
     manifest {
-        attributes["Main-Class"] =application.mainClass
+        attributes["Main-Class"] = application.mainClass
     }
 
     // To avoid the duplicate handling strategy error
