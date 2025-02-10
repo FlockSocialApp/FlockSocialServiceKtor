@@ -3,17 +3,18 @@ package app.flock.social.route
 import app.flock.social.data.ErrorMessage
 import app.flock.social.data.dao.blog.blogDao
 import app.flock.social.data.table.blog.Blogs
-import io.github.smiley4.ktorswaggerui.dsl.delete
-import io.github.smiley4.ktorswaggerui.dsl.get
-import io.github.smiley4.ktorswaggerui.dsl.patch
-import io.github.smiley4.ktorswaggerui.dsl.post
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.github.smiley4.ktorswaggerui.dsl.routing.delete
+import io.github.smiley4.ktorswaggerui.dsl.routing.get
+import io.github.smiley4.ktorswaggerui.dsl.routing.patch
+import io.github.smiley4.ktorswaggerui.dsl.routing.post
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.principal
+import io.ktor.server.request.receive
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Routing
+import io.ktor.server.routing.route
 
 data class BlogRequest(val title: String,val description:String)
 data class BlogUpdateRequest(val blogId: Int, val title: String,val description:String)
@@ -33,7 +34,6 @@ fun Routing.blogRoutes() {
                         HttpStatusCode.InternalServerError to {
                             description = "Internal Server Error"
                             body<ErrorMessage> {
-                                example("Internal Server Error", ErrorMessage(message = "Internal Server Error"))
                             }
                         }
                     }
@@ -53,11 +53,6 @@ fun Routing.blogRoutes() {
                         body<BlogRequest> {
                             description = "Blog Create Request"
                             required = true
-
-                            example("Blog 1", BlogRequest(title = "I am a blog",description="Description")) {
-                                description = "Example for blog request"
-                                summary = "Default Blog Request"
-                            }
                         }
                     }
                     response {
@@ -70,13 +65,11 @@ fun Routing.blogRoutes() {
                         HttpStatusCode.BadRequest to {
                             description = "Bad Request"
                             body<ErrorMessage> {
-                                example("Bad Request Error", ErrorMessage(message = "Unable to create"))
                             }
                         }
                         HttpStatusCode.InternalServerError to {
                             description = "Internal Server Error"
                             body<ErrorMessage> {
-                                example("Internal Server Error", ErrorMessage(message = "Internal Server Error"))
                             }
                         }
                     }
@@ -102,11 +95,6 @@ fun Routing.blogRoutes() {
                         body<BlogUpdateRequest> {
                             description = "Blog update request"
                             required = true
-
-                            example("Blog Update", BlogUpdateRequest(blogId = 1, title = "Update1",description="Description")) {
-                                description = "Example of Blog Update Request"
-                                summary = "Default Blog Update Request"
-                            }
                         }
                     }
                     response {
@@ -119,13 +107,11 @@ fun Routing.blogRoutes() {
                         HttpStatusCode.BadRequest to {
                             description = "Bad Request"
                             body<ErrorMessage> {
-                                example("Bad Request Error", ErrorMessage(message = "Unable to update"))
                             }
                         }
                         HttpStatusCode.InternalServerError to {
                             description = "Internal Server Error"
                             body<ErrorMessage> {
-                                example("Internal Server Error", ErrorMessage(message = "Internal Server Error"))
                             }
                         }
                     }
@@ -166,13 +152,11 @@ fun Routing.blogRoutes() {
                     HttpStatusCode.NotFound to {
                         description = "Bad Request"
                         body<ErrorMessage> {
-                            example("Bad Request Error", ErrorMessage(message = "Unable to delete"))
                         }
                     }
                     HttpStatusCode.InternalServerError to {
                         description = "Internal Server Error"
                         body<ErrorMessage> {
-                            example("Internal Server Error", ErrorMessage(message = "Internal Server Error"))
                         }
                     }
                 }

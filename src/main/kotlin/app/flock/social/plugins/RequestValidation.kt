@@ -5,8 +5,10 @@ import app.flock.social.data.UserSignUpRequest
 import app.flock.social.data.dao.user.userDao
 import app.flock.social.route.BlogRequest
 import app.flock.social.route.BlogUpdateRequest
-import io.ktor.server.application.*
-import io.ktor.server.plugins.requestvalidation.*
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.plugins.requestvalidation.RequestValidation
+import io.ktor.server.plugins.requestvalidation.ValidationResult
 
 fun Application.configureRequestValidation(){
     install(RequestValidation) {

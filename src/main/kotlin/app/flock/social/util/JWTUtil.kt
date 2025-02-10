@@ -1,10 +1,11 @@
 package app.flock.social.util
 
+import app.flock.social.data.table.user.User
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
-import app.flock.social.data.table.user.User
-import java.util.*
+import java.util.Date
+
 data class TokenResponse(val accessToken: String, val refreshToken: String)
 object JWTController : TokenProvider {
 

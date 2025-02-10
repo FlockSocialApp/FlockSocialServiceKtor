@@ -4,9 +4,14 @@ import app.flock.social.data.dao.DatabaseFactory.dbQuery
 import app.flock.social.data.table.blog.Blog
 import app.flock.social.data.table.blog.BlogTable
 import app.flock.social.data.table.blog.Blogs
-import io.ktor.server.http.*
-import org.jetbrains.exposed.sql.*
+import io.ktor.server.http.toHttpDateString
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
 import java.time.LocalDateTime
 
 class BlogDaoImpl : BlogDaoFacade {

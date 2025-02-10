@@ -5,8 +5,13 @@ import app.flock.social.data.dao.DatabaseFactory.dbQuery
 import app.flock.social.data.table.user.User
 import app.flock.social.data.table.user.UsersTable
 import kotlinx.coroutines.runBlocking
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 
 class UserDAOFacadeImpl : UserDaoFacade {
 

@@ -8,9 +8,9 @@ val stripe_version: String by project
 val supabase_version: String by project
 
 plugins {
-    kotlin("jvm") version "1.9.0"
-    id("io.ktor.plugin") version "2.3.2"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0"
+    kotlin("jvm") version "2.1.10"
+    id("io.ktor.plugin") version "3.0.3"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.1.10"
 }
 
 group = "app.flock.social"
@@ -46,6 +46,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-jackson:$ktor_version")
 
     // logging
+    implementation("io.ktor:ktor-server-swagger:$ktor_version")
     implementation("io.github.smiley4:ktor-swagger-ui:$swagger_ui_version")
     implementation("org.slf4j:slf4j-simple:2.0.6")
     implementation("ch.qos.logback:logback-classic:$logback_version")
@@ -63,12 +64,13 @@ dependencies {
     implementation("com.stripe:stripe-java:$stripe_version")
 
     // supabase-kt
-    implementation(platform("io.github.jan-tennert.supabase:bom:VERSION"))
-    implementation("io.github.jan-tennert.supabase:[module]:VERSION")
+    implementation(platform("io.github.jan-tennert.supabase:bom:$supabase_version"))
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    implementation("io.github.jan-tennert.supabase:auth-kt")
+    implementation("io.github.jan-tennert.supabase:storage-kt")
 
     // test
-
-    testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
+    testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
 

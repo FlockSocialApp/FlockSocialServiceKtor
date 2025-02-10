@@ -1,11 +1,12 @@
 package app.flock.social.plugins
 
 import app.flock.social.data.ErrorMessage
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.plugins.requestvalidation.*
-import io.ktor.server.plugins.statuspages.*
-import io.ktor.server.response.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.plugins.requestvalidation.RequestValidationException
+import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.response.respond
 
 fun Application.configureStatusPage(){
     install(StatusPages) {
