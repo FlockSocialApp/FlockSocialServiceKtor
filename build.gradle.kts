@@ -5,6 +5,7 @@ val exposed_version: String by project
 val h2_version: String by project
 val swagger_ui_version: String by project
 val stripe_version: String by project
+val supabase_version: String by project
 
 plugins {
     kotlin("jvm") version "1.9.0"
@@ -32,27 +33,43 @@ repositories {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-auth-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-cors-jvm:$ktor_version")
-    implementation("io.ktor:ktor-serialization-jackson:$ktor_version")
-    implementation("io.github.smiley4:ktor-swagger-ui:$swagger_ui_version")
-    implementation("org.slf4j:slf4j-simple:2.0.6")
-    implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
-    implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
-    implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
-    implementation("org.jetbrains.exposed:exposed-java-time:$exposed_version")
-    implementation("com.h2database:h2:$h2_version")
+    // ktor
     implementation("io.ktor:ktor-server-request-validation:$ktor_version")
     implementation("io.ktor:ktor-server-auto-head-response:$ktor_version")
     implementation("io.ktor:ktor-server-content-negotiation:$ktor_version")
     implementation("io.ktor:ktor-server-status-pages:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
+    implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
+    implementation("io.ktor:ktor-server-auth-jvm:$ktor_version")
+    implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktor_version")
+    implementation("io.ktor:ktor-server-cors-jvm:$ktor_version")
+    implementation("io.ktor:ktor-serialization-jackson:$ktor_version")
+
+    // logging
+    implementation("io.github.smiley4:ktor-swagger-ui:$swagger_ui_version")
+    implementation("org.slf4j:slf4j-simple:2.0.6")
     implementation("ch.qos.logback:logback-classic:$logback_version")
+
+    // exposed
+    implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
+    implementation("org.jetbrains.exposed:exposed-java-time:$exposed_version")
+
+    // db
+    implementation("com.h2database:h2:$h2_version")
+
+    // payments
+    implementation("com.stripe:stripe-java:$stripe_version")
+
+    // supabase-kt
+    implementation(platform("io.github.jan-tennert.supabase:bom:VERSION"))
+    implementation("io.github.jan-tennert.supabase:[module]:VERSION")
+
+    // test
+
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
-    implementation("com.stripe:stripe-java:$stripe_version")
 }
 
 
