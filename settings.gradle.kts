@@ -1,1 +1,1 @@
-rootProject.name = "ktor_auth_jwt"
+rootProject.name = "FlockSocialServiceKtor"

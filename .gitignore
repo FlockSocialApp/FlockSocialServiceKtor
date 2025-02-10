@@ -2,8 +2,8 @@
 .env
 .env.development
 .env.production
-.env.local
-.env.*
+.env
+.env
 
 .gradle
 build/

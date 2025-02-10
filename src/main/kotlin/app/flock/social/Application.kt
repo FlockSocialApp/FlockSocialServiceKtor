@@ -31,5 +31,3 @@ fun Application.module() {
     configureSwagger()
     StripeConfig.initialize(EnvConfig.stripeSK)
 }
-
-

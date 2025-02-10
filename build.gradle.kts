@@ -44,11 +44,11 @@ dependencies {
     implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-cors-jvm:$ktor_version")
     implementation("io.ktor:ktor-serialization-jackson:$ktor_version")
+    implementation("io.ktor:ktor-client-java:KTOR_VERSION")
 
     // logging
     implementation("io.ktor:ktor-server-swagger:$ktor_version")
     implementation("io.github.smiley4:ktor-swagger-ui:$swagger_ui_version")
-    implementation("org.slf4j:slf4j-simple:2.0.6")
     implementation("ch.qos.logback:logback-classic:$logback_version")
 
     // exposed
@@ -72,6 +72,9 @@ dependencies {
     // test
     testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+
+    // utils
+    implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
 }
 
 
