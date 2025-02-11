@@ -12,7 +12,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.update
 
-class TokenDaoFacadeImpl : app.flock.social.data.dao.token.TokenDaoFacade {
+class TokenDaoFacadeImpl : TokenDaoFacade {
     private fun resultRowToArticle(row: ResultRow) = Token(
         id = row[TokenTable.userId],
         accessToken = row[TokenTable.accessToken],
@@ -52,29 +52,27 @@ class TokenDaoFacadeImpl : app.flock.social.data.dao.token.TokenDaoFacade {
         TokenTable.select { TokenTable.userId eq userId }.map(::resultRowToArticle).isNotEmpty()
     }
 
-    override suspend fun deleteToken(tokenType: app.flock.social.data.dao.token.TokenType, userId: Int) = dbQuery {
+    override suspend fun deleteToken(tokenType: TokenType, userId: Int) = dbQuery {
         when (tokenType) {
-            app.flock.social.data.dao.token.TokenType.accessToken -> {
+            TokenType.accessToken -> {
                 val updateStatement = TokenTable.update(where = { TokenTable.userId eq userId }) {
                     it[accessToken] = ""
-
                 }
                 updateStatement > 0
             }
 
-            app.flock.social.data.dao.token.TokenType.refreshToken -> {
+            TokenType.refreshToken -> {
                 val updateStatement = TokenTable.update(where = { TokenTable.userId eq userId }) {
                     it[refreshToken] = ""
-
                 }
                 updateStatement > 0
             }
 
-            app.flock.social.data.dao.token.TokenType.allToken -> {
+            TokenType.allToken -> {
                 TokenTable.deleteWhere { TokenTable.userId eq userId } > 0
             }
         }
     }
 }
 
-val tokenDao: app.flock.social.data.dao.token.TokenDaoFacade = app.flock.social.data.dao.token.TokenDaoFacadeImpl()
+val tokenDao: TokenDaoFacade = TokenDaoFacadeImpl()

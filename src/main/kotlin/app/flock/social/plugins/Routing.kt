@@ -1,7 +1,6 @@
 package app.flock.social.plugins
 
 import app.flock.social.route.authRoutes
-import app.flock.social.route.blogRoutes
 import app.flock.social.route.mailingListRoutes
 import app.flock.social.route.paymentRoutes
 import app.flock.social.route.userRoute
@@ -12,7 +11,6 @@ fun Application.configureRouting() {
     routing {
         authRoutes()
         userRoute()
-        blogRoutes()
         paymentRoutes()
         mailingListRoutes()
     }

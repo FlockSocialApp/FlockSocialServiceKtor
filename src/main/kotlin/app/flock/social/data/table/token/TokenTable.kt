@@ -4,7 +4,11 @@ import app.flock.social.data.table.user.UsersTable
 import org.jetbrains.exposed.sql.Table
 data class Tokens(val tokens: List<Token>)
 
-data class Token(val id:Int?,val accessToken:String?,val refreshToken:String)
+data class Token(
+    val id:Int?,
+    val accessToken:String?,
+    val refreshToken:String
+)
 
 object TokenTable: Table() {
     val userId =reference("userID",UsersTable.id)

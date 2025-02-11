@@ -6,6 +6,7 @@ import app.flock.social.data.SuccessMessage
 import app.flock.social.data.UserLoginRequest
 import app.flock.social.data.UserSignUpRequest
 import app.flock.social.data.dao.token.TokenType
+import app.flock.social.data.dao.token.tokenDao
 import app.flock.social.data.dao.user.userDao
 import app.flock.social.data.table.token.Token
 import com.auth0.jwt.JWT
@@ -66,12 +67,13 @@ fun Routing.authRoutes() {
     ) {
         val userLoginRequest = call.receive<UserLoginRequest>()
         val user = userDao.getUser(userLoginRequest)
+
         when {
             user != null -> {
-                val isTokenAvailable = user.id?.let { it1 -> app.flock.social.data.dao.token.tokenDao.isTokenAvailable(userId = it1) }
+                val isTokenAvailable = user.id?.let { it1 -> tokenDao.isTokenAvailable(userId = it1) }
                 when {
                     isTokenAvailable != null && isTokenAvailable == true -> {
-                        app.flock.social.data.dao.token.tokenDao.deleteToken(tokenType = TokenType.allToken, userId = user.id)
+                        tokenDao.deleteToken(tokenType = TokenType.allToken, userId = user.id)
                         val accessToken = JWT.create()
                             .withAudience(audience)
                             .withIssuer(issuer)
@@ -88,7 +90,7 @@ fun Routing.authRoutes() {
                             .withClaim("tokenType", "refreshToken")
                             .withExpiresAt(Date(System.currentTimeMillis() +refreshTokenExpiryTime))
                             .sign(Algorithm.HMAC256(secret))
-                        app.flock.social.data.dao.token.tokenDao.addToken(Token(id = user.id, accessToken = accessToken, refreshToken = refreshToken))
+                        tokenDao.addToken(Token(id = user.id, accessToken = accessToken, refreshToken = refreshToken))
                         call.respond(MyToken(accessToken = accessToken, refreshToken = refreshToken))
                     }
                     else -> {
@@ -110,7 +112,7 @@ fun Routing.authRoutes() {
                                     .withClaim("tokenType", "refreshToken")
                                     .withExpiresAt(Date(System.currentTimeMillis() + refreshTokenExpiryTime))
                                     .sign(Algorithm.HMAC256(secret))
-                                app.flock.social.data.dao.token.tokenDao.addToken(Token(id = user.id, accessToken = accessToken, refreshToken = refreshToken))
+                                tokenDao.addToken(Token(id = user.id, accessToken = accessToken, refreshToken = refreshToken))
                                 call.respond(MyToken(accessToken = accessToken, refreshToken = refreshToken))
                             }
                             else -> {

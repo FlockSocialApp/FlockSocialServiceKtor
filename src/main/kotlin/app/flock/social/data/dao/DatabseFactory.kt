@@ -1,6 +1,5 @@
 package app.flock.social.data.dao
 
-import app.flock.social.data.table.blog.BlogTable
 import app.flock.social.data.table.token.TokenTable
 import app.flock.social.data.table.user.UsersTable
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +16,6 @@ object DatabaseFactory {
         transaction(database) {
             SchemaUtils.create(UsersTable)
             SchemaUtils.create(TokenTable)
-            SchemaUtils.create(BlogTable)
         }
     }
 
