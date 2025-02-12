@@ -14,7 +14,10 @@ object EnvConfig {
     private val dotenv = loadEnv()
 
     // env vars
+    val env: String = dotenv["ENV"]
     val stripeSK: String = dotenv["STRIPE_TEST_SECRET_KEY"]
     val supabaseAnonKey: String = dotenv["SUPABASE_ANON_KEY"]
     val supabaseUrl: String = dotenv["SUPABASE_URL"]
+    val databaseUrl: String = dotenv["DATABASE_URL"]
+    val databasePw: String = dotenv["DATABASE_PASSWORD"]
 }
