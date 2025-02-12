@@ -2,10 +2,10 @@ val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
 val exposed_version: String by project
-val h2_version: String by project
 val swagger_ui_version: String by project
 val stripe_version: String by project
 val supabase_version: String by project
+val postgresql_version: String by project
 
 plugins {
     kotlin("jvm") version "2.1.10"
@@ -58,7 +58,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-java-time:$exposed_version")
 
     // db
-    implementation("com.h2database:h2:$h2_version")
+    implementation("org.postgresql:postgresql:$postgresql_version") // Or the latest version
 
     // payments
     implementation("com.stripe:stripe-java:$stripe_version")

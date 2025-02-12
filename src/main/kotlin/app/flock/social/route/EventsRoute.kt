@@ -1,6 +1,6 @@
 package app.flock.social.route
 
-import app.flock.social.data.EventDTO
+import app.flock.social.data.table.EventDTO
 import app.flock.social.supabase.supabaseClient
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
