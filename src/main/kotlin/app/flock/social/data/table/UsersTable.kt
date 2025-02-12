@@ -36,30 +36,34 @@ object UsersTable : Table("users") {
 
 class UsersDao {
     fun getAllUsers(): List<UserDTO> {
-        return UsersTable
-            .selectAll()
-            .map { user ->
-                UserDTO(
-                    id = user[UsersTable.id].toString(),
-                    displayName = user[UsersTable.displayName],
-                    profilePictureUrl = user[UsersTable.profilePictureUrl],
-                    bio = user[UsersTable.bio],
-                )
-            }
+        return transaction {
+            UsersTable
+                .selectAll()
+                .map { user ->
+                    UserDTO(
+                        id = user[UsersTable.id].toString(),
+                        displayName = user[UsersTable.displayName],
+                        profilePictureUrl = user[UsersTable.profilePictureUrl],
+                        bio = user[UsersTable.bio],
+                    )
+                }
+        }
     }
 
     fun getUserById(id: String): UserDTO? {
-        return UsersTable
-            .select { UsersTable.id eq java.util.UUID.fromString(id) }
-            .map { user ->
-                UserDTO(
-                    id = user[UsersTable.id].toString(),
-                    displayName = user[UsersTable.displayName],
-                    profilePictureUrl = user[UsersTable.profilePictureUrl],
-                    bio = user[UsersTable.bio],
-                )
-            }
-            .firstOrNull()
+        return transaction {
+            UsersTable
+                .select { UsersTable.id eq java.util.UUID.fromString(id) }
+                .map { user ->
+                    UserDTO(
+                        id = user[UsersTable.id].toString(),
+                        displayName = user[UsersTable.displayName],
+                        profilePictureUrl = user[UsersTable.profilePictureUrl],
+                        bio = user[UsersTable.bio],
+                    )
+                }
+                .firstOrNull()
+        }
     }
 
     fun createUser(user: UserDTO) {

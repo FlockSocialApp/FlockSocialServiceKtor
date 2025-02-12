@@ -2,10 +2,6 @@ package app.flock.social.route
 
 import app.flock.social.data.table.EventDTO
 import app.flock.social.data.table.EventDao
-import app.flock.social.data.table.RsvpDTO
-import app.flock.social.data.table.RsvpDao
-import app.flock.social.supabase.supabaseClient
-import io.github.jan.supabase.postgrest.from
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
@@ -29,11 +25,10 @@ fun Routing.eventsRoute(
             ) ?: Throwable("Event not found")
 
             call.respond(
-                HttpStatusCode.OK,
                 entry
             )
         } catch (e: Exception) {
-            call.respond(HttpStatusCode.BadRequest)
+            call.respond(HttpStatusCode.BadRequest, e.localizedMessage)
         }
     }
 
@@ -41,9 +36,9 @@ fun Routing.eventsRoute(
     get("/events") {
         try {
             val entries = eventDao.getAllEvents()
-            call.respond(HttpStatusCode.OK, entries)
+            call.respond(entries)
         } catch (e: Exception) {
-            call.respond(HttpStatusCode.BadRequest)
+            call.respond(HttpStatusCode.BadRequest, e.localizedMessage)
         }
     }
 

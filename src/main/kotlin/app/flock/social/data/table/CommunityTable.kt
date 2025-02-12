@@ -32,38 +32,42 @@ object CommunityTable : Table("communities") {
 
 class CommunityDao {
     fun getAllCommunities(): List<CommunityDTO> {
-        return CommunityTable
-            .selectAll()
-            .map { community ->
-                CommunityDTO(
-                    id = community[CommunityTable.id].toString(),
-                    displayName = community[CommunityTable.displayName],
-                    description = community[CommunityTable.description],
-                    ownerId = community[CommunityTable.ownerId].toString()
-                )
-            }
+        return transaction {
+            CommunityTable
+                .selectAll()
+                .map { community ->
+                    CommunityDTO(
+                        id = community[CommunityTable.id].toString(),
+                        displayName = community[CommunityTable.displayName],
+                        description = community[CommunityTable.description],
+                        ownerId = community[CommunityTable.ownerId].toString()
+                    )
+                }
+        }
     }
 
     fun getCommunityById(id: String): CommunityDTO? {
-        return CommunityTable
-            .select { CommunityTable.id eq java.util.UUID.fromString(id)  }
-            .map { community ->
-                CommunityDTO(
-                    id = community[CommunityTable.id].toString(),
-                    displayName = community[CommunityTable.displayName],
-                    description = community[CommunityTable.description],
-                    ownerId = community[CommunityTable.ownerId].toString()
-                )
-            }
-            .firstOrNull()
+        return transaction {
+            CommunityTable
+                .select { CommunityTable.id eq java.util.UUID.fromString(id) }
+                .map { community ->
+                    CommunityDTO(
+                        id = community[CommunityTable.id].toString(),
+                        displayName = community[CommunityTable.displayName],
+                        description = community[CommunityTable.description],
+                        ownerId = community[CommunityTable.ownerId].toString()
+                    )
+                }
+                .firstOrNull()
+        }
     }
 
     fun createCommunity(community: CommunityDTO) {
-        transaction {   
+        transaction {
             CommunityTable.insert {
                 it[id] = java.util.UUID.fromString(community.id)
                 it[displayName] = community.displayName
-                it[description] = community.description 
+                it[description] = community.description
                 it[ownerId] = java.util.UUID.fromString(community.ownerId)
             }
         }
@@ -73,7 +77,7 @@ class CommunityDao {
         transaction {
             CommunityTable.update({ CommunityTable.id eq java.util.UUID.fromString(community.id) }) {
                 it[displayName] = community.displayName
-            it[description] = community.description
+                it[description] = community.description
                 it[ownerId] = java.util.UUID.fromString(community.ownerId)
             }
         }

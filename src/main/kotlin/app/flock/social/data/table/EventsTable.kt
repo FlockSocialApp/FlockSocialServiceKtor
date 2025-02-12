@@ -37,30 +37,34 @@ object EventsTable : Table("events") {
 
 class EventDao {
     fun getAllEvents(): List<EventDTO> {
-        return EventsTable
-            .selectAll()
-            .map { event ->
-                EventDTO(
-                    id = event[EventsTable.id].toString(),
-                    displayName = event[EventsTable.displayName],
-                    description = event[EventsTable.description],
-                    communityId = event[EventsTable.communityId].toString()
-                )
-            }
+        return transaction {
+            EventsTable
+                .selectAll()
+                .map { event ->
+                    EventDTO(
+                        id = event[EventsTable.id].toString(),
+                        displayName = event[EventsTable.displayName],
+                        description = event[EventsTable.description],
+                        communityId = event[EventsTable.communityId].toString()
+                    )
+                }
+        }
     }
 
     fun getEventById(id: String): EventDTO? {
-        return EventsTable
-            .select { EventsTable.id eq java.util.UUID.fromString(id) }
-            .map { event ->
-                EventDTO(
-                    id = event[EventsTable.id].toString(),
-                    displayName = event[EventsTable.displayName],
-                    description = event[EventsTable.description],
-                    communityId = event[EventsTable.communityId].toString()
-                )
-            }
-            .firstOrNull()  
+        return transaction {
+            EventsTable
+                .select { EventsTable.id eq java.util.UUID.fromString(id) }
+                .map { event ->
+                    EventDTO(
+                        id = event[EventsTable.id].toString(),
+                        displayName = event[EventsTable.displayName],
+                        description = event[EventsTable.description],
+                        communityId = event[EventsTable.communityId].toString()
+                    )
+                }
+                .firstOrNull()
+        }
     }
 
     fun createEvent(event: EventDTO) {
@@ -79,10 +83,10 @@ class EventDao {
     fun updateEvent(event: EventDTO) {
         transaction {
             EventsTable.update({ EventsTable.id eq java.util.UUID.fromString(event.id) }) {
-            it[displayName] = event.displayName
-            it[description] = event.description
-            it[communityId] = java.util.UUID.fromString(event.communityId)
-            it[updatedAt] = LocalDateTime.now()
+                it[displayName] = event.displayName
+                it[description] = event.description
+                it[communityId] = java.util.UUID.fromString(event.communityId)
+                it[updatedAt] = LocalDateTime.now()
             }
         }
     }

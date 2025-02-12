@@ -22,7 +22,7 @@ data class BookmarkDTO(
 
 object BookmarksTable : Table("user_event_bookmarks") {
     val id = uuid("id")
-    val eventId = uuid("event_id").references(EventsTable.id,  onDelete = ReferenceOption.CASCADE)
+    val eventId = uuid("event_id").references(EventsTable.id, onDelete = ReferenceOption.CASCADE)
     val userId = uuid("user_id").references(UsersTable.id, onDelete = ReferenceOption.CASCADE)
     val createdAt = datetime("created_at").clientDefault { LocalDateTime.now() }
     val updatedAt = datetime("updated_at").clientDefault { LocalDateTime.now() }
@@ -32,28 +32,32 @@ object BookmarksTable : Table("user_event_bookmarks") {
 
 class BookmarkDao {
     fun getAllBookmarks(): List<BookmarkDTO> {
-        return BookmarksTable
-            .selectAll()
-            .map { bookmark ->
-                BookmarkDTO(
-                    id = bookmark[BookmarksTable.id].toString(),
-                    eventId = bookmark[BookmarksTable.eventId].toString(),
-                    userId = bookmark[BookmarksTable.userId].toString()
-                )
-            }
+        return transaction {
+            BookmarksTable
+                .selectAll()
+                .map { bookmark ->
+                    BookmarkDTO(
+                        id = bookmark[BookmarksTable.id].toString(),
+                        eventId = bookmark[BookmarksTable.eventId].toString(),
+                        userId = bookmark[BookmarksTable.userId].toString()
+                    )
+                }
+        }
     }
 
     fun getBookmarkById(id: String): BookmarkDTO? {
-        return BookmarksTable
-            .select { BookmarksTable.id eq java.util.UUID.fromString(id) }
-            .map { bookmark ->
-                BookmarkDTO(
-                    id = bookmark[BookmarksTable.id].toString(),
-                    eventId = bookmark[BookmarksTable.eventId].toString(),
-                    userId = bookmark[BookmarksTable.userId].toString()
-                )
-            }
-            .firstOrNull()
+        return transaction {
+            BookmarksTable
+                .select { BookmarksTable.id eq java.util.UUID.fromString(id) }
+                .map { bookmark ->
+                    BookmarkDTO(
+                        id = bookmark[BookmarksTable.id].toString(),
+                        eventId = bookmark[BookmarksTable.eventId].toString(),
+                        userId = bookmark[BookmarksTable.userId].toString()
+                    )
+                }
+                .firstOrNull()
+        }
     }
 
     fun createBookmark(bookmark: BookmarkDTO) {

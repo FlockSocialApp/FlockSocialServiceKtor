@@ -16,6 +16,7 @@ import app.flock.social.route.rsvpRoute
 import app.flock.social.route.supabaseAuthRoutes
 import io.ktor.server.application.Application
 import io.ktor.server.routing.routing
+import org.slf4j.LoggerFactory
 
 fun Application.configureRouting() {
     val eventDao = EventDao()
@@ -24,6 +25,7 @@ fun Application.configureRouting() {
     val usersDao = UsersDao()
     val bookmarksDao = BookmarkDao()
     val followsDao = FollowsDao()
+    val logger = LoggerFactory.getLogger(this::class.java)
 
     routing {
         paymentRoutes()

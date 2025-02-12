@@ -35,28 +35,32 @@ object FollowsTable : Table("user_follows") {
 
 class FollowsDao {
     fun getAllFollows(): List<FollowDTO> {
-        return FollowsTable
-            .selectAll()
-            .map { follow ->
-                FollowDTO(
-                    id = follow[FollowsTable.id].toString(),
-                    followerId = follow[FollowsTable.followerId].toString(),
-                    followingId = follow[FollowsTable.followingId].toString()
-                )
-            }
+        return transaction {
+            FollowsTable
+                .selectAll()
+                .map { follow ->
+                    FollowDTO(
+                        id = follow[FollowsTable.id].toString(),
+                        followerId = follow[FollowsTable.followerId].toString(),
+                        followingId = follow[FollowsTable.followingId].toString()
+                    )
+                }
+        }
     }
 
     fun getFollowById(id: String): FollowDTO? {
-        return FollowsTable
-            .select { FollowsTable.id eq java.util.UUID.fromString(id) }
-            .map { follow ->
-                FollowDTO(
-                    id = follow[FollowsTable.id].toString(),
-                    followerId = follow[FollowsTable.followerId].toString(),
-                    followingId = follow[FollowsTable.followingId].toString()
-                )
-            }
-            .firstOrNull()
+        return transaction {
+            FollowsTable
+                .select { FollowsTable.id eq java.util.UUID.fromString(id) }
+                .map { follow ->
+                    FollowDTO(
+                        id = follow[FollowsTable.id].toString(),
+                        followerId = follow[FollowsTable.followerId].toString(),
+                        followingId = follow[FollowsTable.followingId].toString()
+                    )
+                }
+                .firstOrNull()
+        }
     }
 
     fun createFollow(follow: FollowDTO) {

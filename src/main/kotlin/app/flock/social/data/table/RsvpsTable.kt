@@ -26,8 +26,8 @@ data class RsvpDTO(
 
 object RsvpsTable : Table("user_event_rsvps") {
     val id = uuid("id")
-    val eventId = uuid("event_id").references(EventsTable.id,  onDelete = ReferenceOption.CASCADE)
-    val userId = uuid("user_id").references(UsersTable.id,  onDelete = ReferenceOption.CASCADE)
+    val eventId = uuid("event_id").references(EventsTable.id, onDelete = ReferenceOption.CASCADE)
+    val userId = uuid("user_id").references(UsersTable.id, onDelete = ReferenceOption.CASCADE)
     val status = varchar("status", 255)
     val createdAt = datetime("created_at").clientDefault { LocalDateTime.now() }
     val updatedAt = datetime("updated_at").clientDefault { LocalDateTime.now() }
@@ -37,30 +37,34 @@ object RsvpsTable : Table("user_event_rsvps") {
 
 class RsvpDao {
     fun getAllRsvps(): List<RsvpDTO> {
-        return RsvpsTable
-            .selectAll()
-            .map { rsvp ->
-                RsvpDTO(
-                    id = rsvp[RsvpsTable.id].toString(),
-                    eventId = rsvp[RsvpsTable.eventId].toString(),
-                    userId = rsvp[RsvpsTable.userId].toString(),
-                    status = rsvp[RsvpsTable.status]
-                )
-            }
+        return transaction {
+            RsvpsTable
+                .selectAll()
+                .map { rsvp ->
+                    RsvpDTO(
+                        id = rsvp[RsvpsTable.id].toString(),
+                        eventId = rsvp[RsvpsTable.eventId].toString(),
+                        userId = rsvp[RsvpsTable.userId].toString(),
+                        status = rsvp[RsvpsTable.status]
+                    )
+                }
+        }
     }
 
     fun getRsvpById(id: String): RsvpDTO? {
-        return RsvpsTable
-            .select { RsvpsTable.id eq java.util.UUID.fromString(id) }
-            .map { rsvp ->
-                RsvpDTO(
-                    id = rsvp[RsvpsTable.id].toString(),
-                    eventId = rsvp[RsvpsTable.eventId].toString(),
-                    userId = rsvp[RsvpsTable.userId].toString(),
-                    status = rsvp[RsvpsTable.status]
-                )
-            }
-            .firstOrNull()
+        return transaction {
+            RsvpsTable
+                .select { RsvpsTable.id eq java.util.UUID.fromString(id) }
+                .map { rsvp ->
+                    RsvpDTO(
+                        id = rsvp[RsvpsTable.id].toString(),
+                        eventId = rsvp[RsvpsTable.eventId].toString(),
+                        userId = rsvp[RsvpsTable.userId].toString(),
+                        status = rsvp[RsvpsTable.status]
+                    )
+                }
+                .firstOrNull()
+        }
     }
 
     fun createRsvp(rsvp: RsvpDTO) {
