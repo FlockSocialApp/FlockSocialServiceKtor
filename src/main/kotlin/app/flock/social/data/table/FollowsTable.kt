@@ -33,7 +33,7 @@ object FollowsTable : Table("user_follows") {
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
-class FollowDao {
+class FollowsDao {
     fun getAllFollows(): List<FollowDTO> {
         return FollowsTable
             .selectAll()

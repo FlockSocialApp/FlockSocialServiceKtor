@@ -34,7 +34,7 @@ object UsersTable : Table("users") {
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
-class UserDao {
+class UsersDao {
     fun getAllUsers(): List<UserDTO> {
         return UsersTable
             .selectAll()
