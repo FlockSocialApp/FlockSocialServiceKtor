@@ -19,5 +19,6 @@ object EnvConfig {
     val supabaseAnonKey: String = dotenv["SUPABASE_ANON_KEY"]
     val supabaseUrl: String = dotenv["SUPABASE_URL"]
     val databaseUrl: String = dotenv["DATABASE_URL"]
+    val databaseUser: String = dotenv["DATABASE_USER"]
     val databasePw: String = dotenv["DATABASE_PASSWORD"]
 }

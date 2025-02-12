@@ -25,7 +25,7 @@ object CommunityTable : Table("communities") {
     val id = uuid("id")
     val displayName = varchar(name = "display_name", length = 255)
     val description = varchar(name = "description", length = 1000).nullable()
-    val ownerId = uuid("owner_id")
+    val ownerId = uuid("owner_id").references(UsersTable.id)
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }

@@ -1,8 +1,12 @@
 package app.flock.social.data.dao
 
+import app.flock.social.data.table.UsersTable
 import app.flock.social.util.EnvConfig
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.StdOutSqlLogger
+import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -23,21 +27,33 @@ import org.jetbrains.exposed.sql.transactions.transaction
  */
 object DatabaseFactory {
     fun init() {
-        val database = Database.connect(
-            url = EnvConfig.databaseUrl,
-            driver = "org.postgresql.Driver",
-            user = "postgres",
-            password = EnvConfig.databasePw
-        )
-        transaction(database) {
-//            SchemaUtils.create(
-//                BookmarksTable,
-//                CommunityTable,
-//                EventsTable,
-//                FollowsTable,
-//                RsvpsTable,
-//                UsersTable
-//            )
+        try {
+            println("Connecting to database...")
+            val database = Database.connect(
+                url = EnvConfig.databaseUrl,
+                driver = "org.postgresql.Driver",
+                user = EnvConfig.databaseUser,
+                password = EnvConfig.databasePw
+            )
+
+            transaction(database) {
+                // Add SQL logging
+                addLogger(StdOutSqlLogger)
+                
+                // Test basic connection and permissions
+                println("Testing connection...")
+                
+                // Try to create just the users table
+                println("Attempting to create UsersTable...")
+                SchemaUtils.create(UsersTable)
+                println("UsersTable created successfully")
+            }
+        } catch (e: Exception) {
+            println("Error during database operations:")
+            println("Message: ${e.message}")
+            println("Cause: ${e.cause?.message}")
+            e.printStackTrace()
+            throw e
         }
     }
 

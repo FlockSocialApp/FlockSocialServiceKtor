@@ -23,7 +23,7 @@ data class UserDTO(
     val bio: String,
 )
 
-object UsersTable : Table("users") {
+object UsersTable : Table("users1") {
     val id = uuid("id")
     val displayName = varchar("display_name", 255)
     val profilePictureUrl = varchar("profile_picture_url", 255)
