@@ -24,7 +24,7 @@ data class RsvpDTO(
     val status: String
 )
 
-object RsvpsTable : Table("rsvps") {
+object RsvpsTable : Table("user_event_rsvps") {
     val id = uuid("id")
     val eventId = uuid("event_id").references(EventsTable.id,  onDelete = ReferenceOption.CASCADE)
     val userId = uuid("user_id").references(UsersTable.id,  onDelete = ReferenceOption.CASCADE)

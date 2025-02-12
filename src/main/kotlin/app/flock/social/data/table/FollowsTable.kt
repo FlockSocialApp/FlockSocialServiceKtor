@@ -23,7 +23,7 @@ data class FollowDTO(
     val followingId: String
 )
 
-object FollowsTable : Table("follows") {
+object FollowsTable : Table("user_follows") {
     val id = uuid("id")
     val followerId = uuid("follower_id").references(UsersTable.id, onDelete = ReferenceOption.CASCADE)
     val followingId = uuid("following_id").references(UsersTable.id, onDelete = ReferenceOption.CASCADE)

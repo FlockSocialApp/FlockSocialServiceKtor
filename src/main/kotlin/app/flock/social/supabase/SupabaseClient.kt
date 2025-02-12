@@ -8,7 +8,7 @@ import io.github.jan.supabase.postgrest.Postgrest
 
 val supabaseClient = createSupabaseClient(
     supabaseUrl = EnvConfig.supabaseUrl,
-    supabaseKey = EnvConfig.supabaseAnonKey,
+    supabaseKey = EnvConfig.supabaseServiceKey,
 )
 {
     install(Postgrest)

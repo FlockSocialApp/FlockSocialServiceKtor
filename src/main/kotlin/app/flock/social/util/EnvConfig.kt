@@ -17,6 +17,7 @@ object EnvConfig {
     val env: String = dotenv["ENV"]
     val stripeSK: String = dotenv["STRIPE_TEST_SECRET_KEY"]
     val supabaseAnonKey: String = dotenv["SUPABASE_ANON_KEY"]
+    val supabaseServiceKey: String = dotenv["SUPABASE_SERVICE_KEY"]
     val supabaseUrl: String = dotenv["SUPABASE_URL"]
     val databaseUrl: String = dotenv["DATABASE_URL"]
     val databaseUser: String = dotenv["DATABASE_USER"]

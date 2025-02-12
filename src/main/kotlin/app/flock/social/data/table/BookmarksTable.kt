@@ -20,7 +20,7 @@ data class BookmarkDTO(
     val userId: String
 )
 
-object BookmarksTable : Table("bookmarks") {
+object BookmarksTable : Table("user_event_bookmarks") {
     val id = uuid("id")
     val eventId = uuid("event_id").references(EventsTable.id,  onDelete = ReferenceOption.CASCADE)
     val userId = uuid("user_id").references(UsersTable.id, onDelete = ReferenceOption.CASCADE)
