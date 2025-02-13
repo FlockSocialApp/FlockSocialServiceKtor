@@ -2,7 +2,6 @@ package app.flock.social.route
 
 import app.flock.social.data.table.BookmarkDTO
 import app.flock.social.data.table.BookmarkDao
-import app.flock.social.data.table.UsersDao
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
@@ -14,7 +13,6 @@ import io.ktor.server.routing.put
 
 fun Routing.bookmarksRoute(
     bookmarksDao: BookmarkDao,
-    usersDao: UsersDao
 ) {
     // Get bookmark by id
     get("/bookmarks/{id}") {

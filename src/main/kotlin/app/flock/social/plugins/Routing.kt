@@ -14,6 +14,7 @@ import app.flock.social.route.mailingListRoutes
 import app.flock.social.route.paymentRoutes
 import app.flock.social.route.rsvpRoute
 import app.flock.social.route.supabaseAuthRoutes
+import app.flock.social.route.usersRoute
 import io.ktor.server.application.Application
 import io.ktor.server.routing.routing
 import org.slf4j.LoggerFactory
@@ -46,11 +47,14 @@ fun Application.configureRouting() {
 
         bookmarksRoute(
             bookmarksDao = bookmarksDao,
-            usersDao = usersDao
         )
 
         followsRoute(
             followsDao = followsDao
+        )
+
+        usersRoute(
+            usersDao = usersDao
         )
     }
 }
