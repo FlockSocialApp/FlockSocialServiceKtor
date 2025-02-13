@@ -35,6 +35,14 @@ object DatabaseFactory {
             password = EnvConfig.databasePw
         )
 
+//       transaction(database) {
+//           SchemaUtils.createMissingTablesAndColumns(
+//               EventsTable
+//           )
+//       }
+    }
+
+    private fun initAndSeedDb(database: Database) {
         transaction(database) {
             SchemaUtils.create(
                 UsersTable,
@@ -51,18 +59,18 @@ object DatabaseFactory {
                     usersDao.createUser(
                         UserDTO(
                             id = UUID.randomUUID().toString(),
-                            "Demo User",
+                            "jess@flocksocial",
                             "https://picsum.photos/200",
-                            "This is a demo user account",
+                            "just a girl",
                         )
                     )
 
                     UsersDao().createUser(
                         UserDTO(
                             id = UUID.randomUUID().toString(),
-                            "Demo User 2",
+                            "bryan@flocksocial",
                             "https://picsum.photos/200",
-                            "This is a demo user account 2",
+                            "silly juice boy",
                         )
                     )
                 }
@@ -90,6 +98,11 @@ object DatabaseFactory {
                             displayName = "Demo Event",
                             description = "This is a demo event",
                             communityId = demoCommunityId,
+                            address = "address",
+                            startTime = null,
+                            endTime = null,
+                            cost = null,
+                            thumbnailUrl = null,
                         )
                     )
                 }

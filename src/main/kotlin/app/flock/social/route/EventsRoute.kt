@@ -14,15 +14,13 @@ import io.ktor.server.routing.put
 fun Routing.eventsRoute(
     eventDao: EventDao,
 ) {
-    // EVENTS
-
     // Get event by id
     get("/events/{id}") {
         val eventId = call.parameters["id"] ?: call.respond(HttpStatusCode.BadRequest)
         try {
-            val entry = eventDao.getEventById(
+            val entry = eventDao.getEventWithAttendees(
                 eventId.toString()
-            ) ?: Throwable("Event not found")
+            )
 
             call.respond(
                 entry

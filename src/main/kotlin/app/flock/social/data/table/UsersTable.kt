@@ -2,6 +2,7 @@ package app.flock.social.data.table
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.deleteWhere
@@ -40,12 +41,7 @@ class UsersDao {
             UsersTable
                 .selectAll()
                 .map { user ->
-                    UserDTO(
-                        id = user[UsersTable.id].toString(),
-                        displayName = user[UsersTable.displayName],
-                        profilePictureUrl = user[UsersTable.profilePictureUrl],
-                        bio = user[UsersTable.bio],
-                    )
+                    mapRowToUserDTO(user)
                 }
         }
     }
@@ -55,12 +51,7 @@ class UsersDao {
             UsersTable
                 .select { UsersTable.id eq java.util.UUID.fromString(id) }
                 .map { user ->
-                    UserDTO(
-                        id = user[UsersTable.id].toString(),
-                        displayName = user[UsersTable.displayName],
-                        profilePictureUrl = user[UsersTable.profilePictureUrl],
-                        bio = user[UsersTable.bio],
-                    )
+                    mapRowToUserDTO(user)
                 }
                 .firstOrNull()
         }
@@ -95,4 +86,13 @@ class UsersDao {
             UsersTable.deleteWhere { UsersTable.id eq java.util.UUID.fromString(id) }
         }
     }
+}
+
+fun mapRowToUserDTO(user: ResultRow): UserDTO {
+    return UserDTO(
+        id = user[UsersTable.id].toString(),
+        displayName = user[UsersTable.displayName],
+        profilePictureUrl = user[UsersTable.profilePictureUrl],
+        bio = user[UsersTable.bio],
+    )
 }
