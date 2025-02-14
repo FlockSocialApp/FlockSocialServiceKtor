@@ -9,6 +9,7 @@ import app.flock.social.data.table.mapRowToEventDTO
 import app.flock.social.data.table.mapRowToUserDTO
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select

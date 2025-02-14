@@ -2,12 +2,7 @@ package app.flock.social.data.dao
 
 import app.flock.social.data.table.BookmarkDTO
 import app.flock.social.data.table.BookmarksTable
-import app.flock.social.data.table.CommunityApplicationFormTable
-import app.flock.social.data.table.CommunityApplicationQuestionsTable
-import app.flock.social.data.table.CommunityApplicationResponsesTable
-import app.flock.social.data.table.CommunityApplicationSubmissionsTable
 import app.flock.social.data.table.CommunityDTO
-import app.flock.social.data.table.CommunityMembershipsTable
 import app.flock.social.data.table.CommunityTable
 import app.flock.social.data.table.EventDTO
 import app.flock.social.data.table.EventsTable
@@ -35,21 +30,21 @@ object DatabaseFactory {
             password = EnvConfig.databasePw
         )
 
-       transaction(database) {
-           SchemaUtils.create(
-               CommunityMembershipsTable,
-               CommunityApplicationFormTable,
-               CommunityApplicationQuestionsTable,
-               CommunityApplicationResponsesTable,
-               CommunityApplicationSubmissionsTable
-           )
-
-           SchemaUtils.createMissingTablesAndColumns(
-               EventsTable,
-               CommunityTable,
-               RsvpsTable
-           )
-       }
+//       transaction(database) {
+//           SchemaUtils.create(
+//               CommunityMembershipsTable,
+//               CommunityApplicationFormTable,
+//               CommunityApplicationQuestionsTable,
+//               CommunityApplicationResponsesTable,
+//               CommunityApplicationSubmissionsTable
+//           )
+//
+//           SchemaUtils.createMissingTablesAndColumns(
+//               EventsTable,
+//               CommunityTable,
+//               RsvpsTable
+//           )
+//       }
     }
 
     private fun initAndSeedDb(database: Database) {

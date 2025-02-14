@@ -3,6 +3,7 @@ package app.flock.social.data.dao
 import app.flock.social.data.table.UserDTO
 import app.flock.social.data.table.UsersTable
 import app.flock.social.data.table.mapRowToUserDTO
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select

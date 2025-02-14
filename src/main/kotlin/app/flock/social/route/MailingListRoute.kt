@@ -1,7 +1,6 @@
 package app.flock.social.route
 
-import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.postgrest.from
+import app.flock.social.data.dao.MailingListDao
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
@@ -18,15 +17,15 @@ data class MailingListSignUpRequest(
 )
 
 fun Routing.mailingListRoutes(
-    supabaseClient: SupabaseClient = app.flock.social.supabase.supabaseClient
+    mailingListDao: MailingListDao
 ) {
     route("/mailing") {
         post("/sign-up") {
             try {
-                val email = call.receive<MailingListSignUpRequest>()
+                val emailRequest = call.receive<MailingListSignUpRequest>()
                 call.respond(
                     HttpStatusCode.OK,
-                    supabaseClient.from("mailing_list").insert(email)
+                    mailingListDao.insert(emailRequest.email)
                 )
             } catch (e: Exception) {
                 print(e.message)

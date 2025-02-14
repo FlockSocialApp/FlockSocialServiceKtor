@@ -2,6 +2,7 @@ package app.flock.social.data.dao
 
 import app.flock.social.data.table.RsvpDTO
 import app.flock.social.data.table.RsvpsTable
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
