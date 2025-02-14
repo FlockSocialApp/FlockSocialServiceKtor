@@ -1,20 +1,12 @@
 package app.flock.social.data.table
 
-import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toKotlinLocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.datetime
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 import java.time.LocalDateTime
 
 @Serializable
@@ -46,98 +38,6 @@ object EventsTable : Table("events") {
     val thumbnailUrl = varchar("thumbnail_url", 255).nullable()
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
-}
-
-class EventDao {
-    fun getAllEvents(): List<EventDTO> {
-        return transaction {
-            EventsTable
-                .selectAll()
-                .map { event ->
-                    mapRowToEventDTO(event)
-                }
-        }
-    }
-
-    fun getEventById(id: String): EventDTO? {
-        return transaction {
-            EventsTable
-                .select { EventsTable.id eq java.util.UUID.fromString(id) }
-                .map { event ->
-                    mapRowToEventDTO(event)
-                }
-                .firstOrNull()
-        }
-    }
-
-    fun createEvent(event: EventDTO) {
-        transaction {
-            EventsTable.insert {
-                it[id] = java.util.UUID.fromString(event.id)
-                it[displayName] = event.displayName
-                it[description] = event.description
-                it[communityId] = java.util.UUID.fromString(event.communityId)
-                it[address] = event.address
-                it[createdAt] = LocalDateTime.now()
-                it[updatedAt] = LocalDateTime.now()
-                it[cost] = event.cost?.toBigDecimal()
-                it[thumbnailUrl] = event.thumbnailUrl
-            }
-        }
-    }
-
-    fun updateEvent(event: EventDTO) {
-        transaction {
-            EventsTable.update({ EventsTable.id eq java.util.UUID.fromString(event.id) }) {
-                it[displayName] = event.displayName
-                it[description] = event.description
-                it[communityId] = java.util.UUID.fromString(event.communityId)
-                it[address] = event.address
-                it[startTime] = event.startTime?.toJavaLocalDateTime()
-                it[endTime] = event.endTime?.toJavaLocalDateTime()
-                it[updatedAt] = LocalDateTime.now()
-                it[cost] = event.cost?.toBigDecimal()
-                it[thumbnailUrl] = event.thumbnailUrl
-            }
-        }
-    }
-
-    fun deleteEvent(id: String) {
-        transaction {
-            EventsTable.deleteWhere { EventsTable.id eq java.util.UUID.fromString(id) }
-        }
-    }
-
-    @Serializable
-    class EventWithAttendees(
-        val event: EventDTO,
-        val attendees: List<UserDTO>,
-    )
-
-    fun getEventWithAttendees(eventId: String): EventWithAttendees {
-        return transaction {
-            // First get the event
-            val event = EventsTable
-                .select { EventsTable.id eq java.util.UUID.fromString(eventId) }
-                .map { row ->
-                    mapRowToEventDTO(row)
-                }
-                .firstOrNull() ?: throw Throwable("Missing Event")
-
-            // Then get all attendees for this event through RSVPs
-            val attendees = (UsersTable innerJoin RsvpsTable)
-                .select { RsvpsTable.eventId eq java.util.UUID.fromString(eventId) }
-                .map { row ->
-                    mapRowToUserDTO(row)
-                }
-
-            // Create an anonymous object implementing EventWithAttendees
-            EventWithAttendees(
-                event = event,
-                attendees = attendees,
-            )
-        }
-    }
 }
 
 fun mapRowToEventDTO(event: ResultRow): EventDTO {

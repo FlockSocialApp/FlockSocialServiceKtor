@@ -1,11 +1,11 @@
 package app.flock.social.plugins
 
-import app.flock.social.data.table.BookmarkDao
-import app.flock.social.data.table.CommunityDao
-import app.flock.social.data.table.EventDao
-import app.flock.social.data.table.FollowsDao
-import app.flock.social.data.table.RsvpDao
-import app.flock.social.data.table.UsersDao
+import app.flock.social.data.dao.BookmarkDao
+import app.flock.social.data.dao.CommunityDao
+import app.flock.social.data.dao.EventDao
+import app.flock.social.data.dao.FollowsDao
+import app.flock.social.data.dao.RsvpDao
+import app.flock.social.data.dao.UsersDao
 import app.flock.social.route.bookmarksRoute
 import app.flock.social.route.communityRoute
 import app.flock.social.route.eventsRoute

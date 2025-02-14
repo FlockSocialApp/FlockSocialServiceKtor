@@ -1,7 +1,7 @@
 package app.flock.social.route
 
 import app.flock.social.data.table.RsvpDTO
-import app.flock.social.data.table.RsvpDao
+import app.flock.social.data.dao.RsvpDao
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond

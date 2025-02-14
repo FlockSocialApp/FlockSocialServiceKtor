@@ -1,7 +1,7 @@
 package app.flock.social.route
 
 import app.flock.social.data.table.CommunityDTO
-import app.flock.social.data.table.CommunityDao
+import app.flock.social.data.dao.CommunityDao
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond

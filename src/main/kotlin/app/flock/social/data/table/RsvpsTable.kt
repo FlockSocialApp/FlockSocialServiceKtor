@@ -3,15 +3,8 @@ package app.flock.social.data.table
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.ReferenceOption
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.datetime
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 import java.time.LocalDateTime
 
 @Serializable
@@ -35,65 +28,3 @@ object RsvpsTable : Table("user_event_rsvps") {
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
-class RsvpDao {
-    fun getAllRsvps(): List<RsvpDTO> {
-        return transaction {
-            RsvpsTable
-                .selectAll()
-                .map { rsvp ->
-                    RsvpDTO(
-                        id = rsvp[RsvpsTable.id].toString(),
-                        eventId = rsvp[RsvpsTable.eventId].toString(),
-                        userId = rsvp[RsvpsTable.userId].toString(),
-                        status = rsvp[RsvpsTable.status]
-                    )
-                }
-        }
-    }
-
-    fun getRsvpById(id: String): RsvpDTO? {
-        return transaction {
-            RsvpsTable
-                .select { RsvpsTable.id eq java.util.UUID.fromString(id) }
-                .map { rsvp ->
-                    RsvpDTO(
-                        id = rsvp[RsvpsTable.id].toString(),
-                        eventId = rsvp[RsvpsTable.eventId].toString(),
-                        userId = rsvp[RsvpsTable.userId].toString(),
-                        status = rsvp[RsvpsTable.status]
-                    )
-                }
-                .firstOrNull()
-        }
-    }
-
-    fun createRsvp(rsvp: RsvpDTO) {
-        transaction {
-            RsvpsTable.insert {
-                it[id] = java.util.UUID.fromString(rsvp.id)
-                it[eventId] = java.util.UUID.fromString(rsvp.eventId)
-                it[userId] = java.util.UUID.fromString(rsvp.userId)
-                it[status] = rsvp.status
-                it[createdAt] = LocalDateTime.now()
-                it[updatedAt] = LocalDateTime.now()
-            }
-        }
-    }
-
-    fun updateRsvp(rsvp: RsvpDTO) {
-        transaction {
-            RsvpsTable.update({ RsvpsTable.id eq java.util.UUID.fromString(rsvp.id) }) {
-                it[eventId] = java.util.UUID.fromString(rsvp.eventId)
-                it[userId] = java.util.UUID.fromString(rsvp.userId)
-                it[status] = rsvp.status
-                it[updatedAt] = LocalDateTime.now()
-            }
-        }
-    }
-
-    fun deleteRsvp(id: String) {
-        transaction {
-            RsvpsTable.deleteWhere { RsvpsTable.id eq java.util.UUID.fromString(id) }
-        }
-    }
-}

@@ -1,6 +1,6 @@
 package app.flock.social.route
 
-import app.flock.social.data.table.UsersDao
+import app.flock.social.data.dao.UsersDao
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Routing

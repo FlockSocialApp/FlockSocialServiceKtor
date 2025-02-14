@@ -1,7 +1,7 @@
 package app.flock.social.route
 
 import app.flock.social.data.table.BookmarkDTO
-import app.flock.social.data.table.BookmarkDao
+import app.flock.social.data.dao.BookmarkDao
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
