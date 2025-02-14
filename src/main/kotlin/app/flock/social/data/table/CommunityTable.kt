@@ -2,14 +2,17 @@ package app.flock.social.data.table
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import java.time.LocalDateTime
 
 @Serializable
 data class CommunityDTO(
@@ -18,7 +21,8 @@ data class CommunityDTO(
     val displayName: String,
     val description: String?,
     @SerialName("owner_id")
-    val ownerId: String
+    val ownerId: String,
+    val requiresApplication: Boolean?
 )
 
 object CommunityTable : Table("communities") {
@@ -26,6 +30,9 @@ object CommunityTable : Table("communities") {
     val displayName = varchar(name = "display_name", length = 255)
     val description = varchar(name = "description", length = 1000).nullable()
     val ownerId = uuid("owner_id").references(UsersTable.id)
+    val requiresApplication = bool("requires_application").nullable()
+    val createdAt = datetime("created_at").clientDefault { LocalDateTime.now() }
+    val updatedAt = datetime("updated_at").clientDefault { LocalDateTime.now() }
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
@@ -36,12 +43,7 @@ class CommunityDao {
             CommunityTable
                 .selectAll()
                 .map { community ->
-                    CommunityDTO(
-                        id = community[CommunityTable.id].toString(),
-                        displayName = community[CommunityTable.displayName],
-                        description = community[CommunityTable.description],
-                        ownerId = community[CommunityTable.ownerId].toString()
-                    )
+                    mapRowToCommunityDTO(community)
                 }
         }
     }
@@ -51,12 +53,7 @@ class CommunityDao {
             CommunityTable
                 .select { CommunityTable.id eq java.util.UUID.fromString(id) }
                 .map { community ->
-                    CommunityDTO(
-                        id = community[CommunityTable.id].toString(),
-                        displayName = community[CommunityTable.displayName],
-                        description = community[CommunityTable.description],
-                        ownerId = community[CommunityTable.ownerId].toString()
-                    )
+                    mapRowToCommunityDTO(community)
                 }
                 .firstOrNull()
         }
@@ -69,6 +66,9 @@ class CommunityDao {
                 it[displayName] = community.displayName
                 it[description] = community.description
                 it[ownerId] = java.util.UUID.fromString(community.ownerId)
+                it[requiresApplication] = community.requiresApplication
+                it[createdAt] = LocalDateTime.now()
+                it[updatedAt] = LocalDateTime.now()
             }
         }
     }
@@ -79,6 +79,8 @@ class CommunityDao {
                 it[displayName] = community.displayName
                 it[description] = community.description
                 it[ownerId] = java.util.UUID.fromString(community.ownerId)
+                it[requiresApplication] = community.requiresApplication
+                it[updatedAt] = LocalDateTime.now()
             }
         }
     }
@@ -89,3 +91,11 @@ class CommunityDao {
         }
     }
 }
+
+fun mapRowToCommunityDTO(community: ResultRow) = CommunityDTO(
+    id = community[CommunityTable.id].toString(),
+    displayName = community[CommunityTable.displayName],
+    description = community[CommunityTable.description],
+    ownerId = community[CommunityTable.ownerId].toString(),
+    requiresApplication = community[CommunityTable.requiresApplication],
+)

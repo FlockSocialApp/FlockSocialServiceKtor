@@ -3,8 +3,12 @@ package app.flock.social.data.dao
 import app.flock.social.data.table.BookmarkDTO
 import app.flock.social.data.table.BookmarkDao
 import app.flock.social.data.table.BookmarksTable
+import app.flock.social.data.table.CommunityApplicationFormTable
+import app.flock.social.data.table.CommunityApplicationQuestionsTable
+import app.flock.social.data.table.CommunityApplicationResponsesTable
 import app.flock.social.data.table.CommunityDTO
 import app.flock.social.data.table.CommunityDao
+import app.flock.social.data.table.CommunityMembershipsTable
 import app.flock.social.data.table.CommunityTable
 import app.flock.social.data.table.EventDTO
 import app.flock.social.data.table.EventDao
@@ -35,11 +39,20 @@ object DatabaseFactory {
             password = EnvConfig.databasePw
         )
 
-//       transaction(database) {
-//           SchemaUtils.createMissingTablesAndColumns(
-//               EventsTable
-//           )
-//       }
+       transaction(database) {
+           SchemaUtils.create(
+               CommunityMembershipsTable,
+               CommunityApplicationFormTable,
+               CommunityApplicationQuestionsTable,
+               CommunityApplicationResponsesTable
+           )
+
+           SchemaUtils.createMissingTablesAndColumns(
+               EventsTable,
+               CommunityTable,
+               RsvpsTable
+           )
+       }
     }
 
     private fun initAndSeedDb(database: Database) {
@@ -85,6 +98,7 @@ object DatabaseFactory {
                             displayName = "Demo Community",
                             description = "This is a demo community",
                             ownerId = demoUserId,
+                            requiresApplication = false
                         )
                     )
                 }
