@@ -22,6 +22,7 @@ data class EventDTO constructor(
     val endTime: kotlinx.datetime.LocalDateTime?,
     val cost: String?,
     val thumbnailUrl: String?,
+    val ownerId: String?
 )
 
 object EventsTable : Table("events") {
@@ -36,6 +37,7 @@ object EventsTable : Table("events") {
     val createdAt = datetime("created_at").clientDefault { LocalDateTime.now() }
     val updatedAt = datetime("updated_at").clientDefault { LocalDateTime.now() }
     val thumbnailUrl = varchar("thumbnail_url", 255).nullable()
+    val ownerId = uuid("owner_id").references(UsersTable.id, onDelete = ReferenceOption.CASCADE).nullable()
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
@@ -50,6 +52,7 @@ fun mapRowToEventDTO(event: ResultRow): EventDTO {
         startTime = event[EventsTable.startTime]?.toKotlinLocalDateTime(),
         endTime = event[EventsTable.endTime]?.toKotlinLocalDateTime(),
         cost = event[EventsTable.cost]?.toString(),
-        thumbnailUrl = event[EventsTable.thumbnailUrl]
+        thumbnailUrl = event[EventsTable.thumbnailUrl],
+        ownerId = event[EventsTable.ownerId].toString(),
     )
 }

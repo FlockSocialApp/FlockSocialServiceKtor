@@ -23,7 +23,7 @@ class CommunityApplicationQuestionsDao {
                         applicationFormId = question[CommunityApplicationQuestionsTable.applicationFormId].toString(),
                         questionText = question[CommunityApplicationQuestionsTable.questionText],
                         questionType = question[CommunityApplicationQuestionsTable.questionType],
-                        options = question[CommunityApplicationQuestionsTable.options].split(","),
+                        options = question[CommunityApplicationQuestionsTable.options]?.split(","),
                         order = question[CommunityApplicationQuestionsTable.order]
                     )
                 }
@@ -40,7 +40,7 @@ class CommunityApplicationQuestionsDao {
                         applicationFormId = question[CommunityApplicationQuestionsTable.applicationFormId].toString(),
                         questionText = question[CommunityApplicationQuestionsTable.questionText],
                         questionType = question[CommunityApplicationQuestionsTable.questionType],
-                        options = question[CommunityApplicationQuestionsTable.options].split(","),
+                        options = question[CommunityApplicationQuestionsTable.options]?.split(","),
                         order = question[CommunityApplicationQuestionsTable.order]
                     )
                 }
@@ -55,7 +55,7 @@ class CommunityApplicationQuestionsDao {
                 it[applicationFormId] = UUID.fromString(question.applicationFormId)
                 it[questionText] = question.questionText
                 it[questionType] = question.questionType
-                it[options] = question.options.joinToString(",")
+                it[options] = question.options?.joinToString(",")
                 it[order] = question.order
                 it[createdAt] = LocalDateTime.now()
                 it[updatedAt] = LocalDateTime.now()
@@ -73,7 +73,7 @@ class CommunityApplicationQuestionsDao {
                 it[applicationFormId] = UUID.fromString(question.applicationFormId)
                 it[questionText] = question.questionText
                 it[questionType] = question.questionType
-                it[options] = question.options.joinToString(",")
+                it[options] = question.options?.joinToString(",")
                 it[order] = question.order
                 it[updatedAt] = LocalDateTime.now()
             }

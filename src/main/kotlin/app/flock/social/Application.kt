@@ -1,12 +1,12 @@
 package app.flock.social
 
 import app.flock.social.data.dao.DatabaseFactory
+import app.flock.social.plugins.configureAuthentication
 import app.flock.social.plugins.configureAutoHeadResponse
 import app.flock.social.plugins.configureCORS
 import app.flock.social.plugins.configureHTTP
 import app.flock.social.plugins.configureRequestValidation
 import app.flock.social.plugins.configureRouting
-import app.flock.social.plugins.configureSecurity
 import app.flock.social.plugins.configureSerialization
 import app.flock.social.plugins.configureStatusPage
 import app.flock.social.plugins.configureSwagger
@@ -24,9 +24,9 @@ fun Application.module() {
     configureAutoHeadResponse()
     configureCORS()
     configureStatusPage()
-    configureSecurity()
     configureHTTP()
     configureSerialization()
+    configureAuthentication()
     configureRouting()
     configureSwagger()
     StripeConfig.initialize(EnvConfig.stripeSK)
