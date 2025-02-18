@@ -11,12 +11,14 @@ import app.flock.social.data.table.CommunityApplicationResponsesTable
 import app.flock.social.data.table.CommunityApplicationSubmissionDTO
 import app.flock.social.data.table.CommunityApplicationSubmissionsTable
 import app.flock.social.data.table.CommunityDTO
+import app.flock.social.data.table.CommunityMembershipsDTO
 import app.flock.social.data.table.CommunityMembershipsTable
 import app.flock.social.data.table.CommunityTable
 import app.flock.social.data.table.EventDTO
 import app.flock.social.data.table.EventsTable
 import app.flock.social.data.table.FollowDTO
 import app.flock.social.data.table.FollowsTable
+import app.flock.social.data.table.MembershipStatus
 import app.flock.social.data.table.RsvpDTO
 import app.flock.social.data.table.RsvpsTable
 import app.flock.social.data.table.UserDTO
@@ -41,6 +43,11 @@ object DatabaseFactory {
         )
 //        clearAllTables()
 //        initAndSeedDb(database)
+//        transaction {
+//            SchemaUtils.drop(CommunityMembershipsTable)
+//            SchemaUtils.create(CommunityMembershipsTable)
+//            seedAllTables()
+//        }
     }
 
     private fun clearAllTables() {
@@ -76,43 +83,67 @@ object DatabaseFactory {
                 CommunityApplicationResponsesTable,
                 CommunityMembershipsTable
             ).also {
-                val usersDao = UsersDao()
-
-                // Create seed data if tables are empty
-                seedUserTable(usersDao)
-                val userId = usersDao.getAllUsers()[0].id
-                val userId2 = usersDao.getAllUsers()[1].id
-
-                val communityDao = CommunityDao()
-                seedCommunityTable(communityDao, userId)
-                val communityId = communityDao.getAllCommunities().first().id
-
-                val eventsDao = EventDao()
-                seedEventTable(eventsDao, communityId, userId)
-                val eventId = eventsDao.getAllEvents().first().id
-
-                val followsDao = FollowsDao()
-                seedFollowTable(followsDao, userId, userId2)
-
-                val rsvpDao = RsvpDao()
-                seedRsvpTable(rsvpDao, userId, eventId)
-
-                val bookmarkDao = BookmarkDao()
-                seedBookmarkTable(bookmarkDao, eventId, userId)
-
-                val communityApplicationFormDao = CommunityApplicationFormDao()
-                val communityApplicationQuestionsDao = CommunityApplicationQuestionsDao()
-                val communityApplicationResponsesDao = CommunityApplicationResponsesDao()
-                val communityApplicationSubmissionDao = CommunityApplicationSubmissionsDao()
-                seedCommunityApplicationFormDao(communityApplicationFormDao, communityId)
-                val formId = communityApplicationFormDao.getAllForms().first().id
-
-                seedCommunityApplicationQuestionsDao(communityApplicationQuestionsDao, formId)
-                val questionId = communityApplicationQuestionsDao.getAllQuestions().first().id
-                seedCommunityApplicationSubmissionsDao(communityApplicationSubmissionDao, formId, userId, communityId)
-                val submissionId = communityApplicationSubmissionDao.getAllSubmissions().first().id
-                seedCommunityApplicationResponsesDao(communityApplicationResponsesDao, questionId, submissionId)
+                seedAllTables()
             }
+        }
+    }
+
+    fun seedAllTables() {
+        val usersDao = UsersDao()
+
+        // Create seed data if tables are empty
+        seedUserTable(usersDao)
+        val userId = usersDao.getAllUsers()[0].id
+        val userId2 = usersDao.getAllUsers()[1].id
+
+        val communityDao = CommunityDao()
+        seedCommunityTable(communityDao, userId)
+        val communityId = communityDao.getAllCommunities().first().id
+
+        val eventsDao = EventDao()
+        seedEventTable(eventsDao, communityId, userId)
+        val eventId = eventsDao.getAllEvents().first().id
+
+        val followsDao = FollowsDao()
+        seedFollowTable(followsDao, userId, userId2)
+
+        val rsvpDao = RsvpDao()
+        seedRsvpTable(rsvpDao, userId, eventId)
+
+        val bookmarkDao = BookmarkDao()
+        seedBookmarkTable(bookmarkDao, eventId, userId)
+
+        val communityApplicationFormDao = CommunityApplicationFormDao()
+        val communityApplicationQuestionsDao = CommunityApplicationQuestionsDao()
+        val communityApplicationResponsesDao = CommunityApplicationResponsesDao()
+        val communityApplicationSubmissionDao = CommunityApplicationSubmissionsDao()
+        seedCommunityApplicationFormDao(communityApplicationFormDao, communityId)
+        val formId = communityApplicationFormDao.getAllForms().first().id
+
+        seedCommunityApplicationQuestionsDao(communityApplicationQuestionsDao, formId)
+        val questionId = communityApplicationQuestionsDao.getAllQuestions().first().id
+        seedCommunityApplicationSubmissionsDao(communityApplicationSubmissionDao, formId, userId, communityId)
+        val submissionId = communityApplicationSubmissionDao.getAllSubmissions().first().id
+        seedCommunityApplicationResponsesDao(communityApplicationResponsesDao, questionId, submissionId)
+
+        val communityMembershipsDao = CommunityMembershipsDao()
+        seedCommunityMembershipTable(communityMembershipsDao, communityId, userId)
+    }
+
+    private fun seedCommunityMembershipTable(
+        communityMembershipsDao: CommunityMembershipsDao,
+        communityId: String,
+        userId: String,
+    ) {
+        if (communityMembershipsDao.getAllMemberships().isEmpty()) {
+            communityMembershipsDao.createMembership(
+                CommunityMembershipsDTO(
+                    id = UUID.randomUUID().toString(),
+                    communityId = communityId,
+                    userId = userId,
+                    status = MembershipStatus.Accepted.strValue
+                )
+            )
         }
     }
 

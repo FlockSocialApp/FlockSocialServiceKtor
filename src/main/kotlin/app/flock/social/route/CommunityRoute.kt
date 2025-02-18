@@ -1,7 +1,8 @@
 package app.flock.social.route
 
-import app.flock.social.data.table.CommunityDTO
 import app.flock.social.data.dao.CommunityDao
+import app.flock.social.data.dao.CommunityMembershipsDao
+import app.flock.social.data.table.CommunityDTO
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
@@ -13,14 +14,47 @@ import io.ktor.server.routing.put
 
 fun Routing.communityRoute(
     communityDao: CommunityDao,
+    membershipsDao: CommunityMembershipsDao
 ) {
     // Get community by id
-    get("/communities/{id}") {
+    get("/community/{id}") {
         val communityId = call.parameters["id"] ?: call.respond(HttpStatusCode.BadRequest)
         try {
             val entry = communityDao.getCommunityById(
                 communityId.toString()
             ) ?: throw Throwable("Community not found")
+
+            call.respond(
+                HttpStatusCode.OK,
+                entry
+            )
+        } catch (e: Exception) {
+            call.respond(HttpStatusCode.BadRequest)
+        }
+    }
+
+    get("/community/{id}/with-events") {
+        val communityId = call.parameters["id"] ?: call.respond(HttpStatusCode.BadRequest)
+        try {
+            val entry = communityDao.getCommunityWithEvents(
+                communityId.toString()
+            ) ?: throw Throwable("Community not found")
+
+            call.respond(
+                HttpStatusCode.OK,
+                entry
+            )
+        } catch (e: Exception) {
+            call.respond(HttpStatusCode.BadRequest)
+        }
+    }
+
+    get("community/{id}/members") {
+        val communityId = call.parameters["id"] ?: call.respond(HttpStatusCode.BadRequest)
+        try {
+            val entry = membershipsDao.getMembershipsForCommunityId(
+                communityId.toString()
+            )
 
             call.respond(
                 HttpStatusCode.OK,

@@ -2,7 +2,11 @@ package app.flock.social.data.dao
 
 import app.flock.social.data.table.CommunityDTO
 import app.flock.social.data.table.CommunityTable
+import app.flock.social.data.table.EventDTO
+import app.flock.social.data.table.EventsTable
 import app.flock.social.data.table.mapRowToCommunityDTO
+import app.flock.social.data.table.mapRowToEventDTO
+import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
@@ -64,6 +68,31 @@ class CommunityDao {
     fun deleteCommunity(id: String) {
         transaction {
             CommunityTable.deleteWhere { CommunityTable.id eq UUID.fromString(id) }
+        }
+    }
+
+    @Serializable
+    data class CommunityWithEvents(
+        val community: CommunityDTO,
+        val events: List<EventDTO>
+    )
+
+    fun getCommunityWithEvents(id: String): CommunityWithEvents? {
+        return transaction {
+            val community = CommunityTable
+                .select { CommunityTable.id eq UUID.fromString(id) }
+                .map { community ->
+                    mapRowToCommunityDTO(community)
+                }
+                .firstOrNull() ?: return@transaction null
+
+            val events = EventsTable
+                .select { EventsTable.communityId eq UUID.fromString(id) }
+                .map { event ->
+                    mapRowToEventDTO(event)
+                }
+
+            CommunityWithEvents(community, events)
         }
     }
 }

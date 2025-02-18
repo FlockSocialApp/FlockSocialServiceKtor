@@ -2,6 +2,7 @@ package app.flock.social.plugins
 
 import app.flock.social.data.dao.BookmarkDao
 import app.flock.social.data.dao.CommunityDao
+import app.flock.social.data.dao.CommunityMembershipsDao
 import app.flock.social.data.dao.EventDao
 import app.flock.social.data.dao.FollowsDao
 import app.flock.social.data.dao.MailingListDao
@@ -28,15 +29,18 @@ fun Application.configureRouting() {
     val followsDao = FollowsDao()
 //    val logger = LoggerFactory.getLogger(this::class.java)
     val mailingListDao = MailingListDao()
-
+    val membershipsDao = CommunityMembershipsDao()
     routing {
         paymentRoutes()
         mailingListRoutes(mailingListDao)
         supabaseAuthRoutes()
-        eventsRoute(eventDao = eventDao,)
-        rsvpRoute(rsvpDao = rsvpDao,)
-        communityRoute(communityDao = communityDao,)
-        bookmarksRoute(bookmarksDao = bookmarksDao,)
+        eventsRoute(eventDao = eventDao)
+        rsvpRoute(rsvpDao = rsvpDao)
+        communityRoute(
+            communityDao = communityDao,
+            membershipsDao = membershipsDao
+        )
+        bookmarksRoute(bookmarksDao = bookmarksDao)
         followsRoute(followsDao = followsDao)
         usersRoute(usersDao = usersDao)
     }

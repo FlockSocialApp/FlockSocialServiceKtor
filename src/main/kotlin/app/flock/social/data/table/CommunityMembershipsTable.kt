@@ -1,17 +1,9 @@
 package app.flock.social.data.table
 
 import kotlinx.serialization.Serializable
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.datetime
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 import java.time.LocalDateTime
-import java.util.UUID
 
 /**
  * Data transfer object representing a community membership.
@@ -22,7 +14,7 @@ import java.util.UUID
  * @property status Current status of the membership (pending, accepted, declined)
  */
 @Serializable
-data class CommunityMembershipsTableDTO(
+data class CommunityMembershipsDTO(
     val id: String,
     val communityId: String,
     val userId: String,
@@ -43,7 +35,7 @@ enum class MembershipStatus(val strValue: String) {
 
 object CommunityMembershipsTable : Table("community_memberships") {
     val id = uuid("id")
-    val communityId = varchar("community_id", 255)
+    val communityId = uuid("community_id").references(CommunityTable.id)
     val userId = uuid("user_id").references(UsersTable.id)
     val status = varchar("status", 20).default("pending")
     val createdAt = datetime("created_at").clientDefault { LocalDateTime.now() }
@@ -53,65 +45,3 @@ object CommunityMembershipsTable : Table("community_memberships") {
         get() = PrimaryKey(id)
 }
 
-class CommunityMembershipsDao {
-    fun getAllMemberships(): List<CommunityMembershipsTableDTO> {
-        return transaction {
-            CommunityMembershipsTable
-                .selectAll()
-                .map { membership ->
-                    CommunityMembershipsTableDTO(
-                        id = membership[CommunityMembershipsTable.id].toString(),
-                        communityId = membership[CommunityMembershipsTable.communityId],
-                        userId = membership[CommunityMembershipsTable.userId].toString(),
-                        status = membership[CommunityMembershipsTable.status]
-                    )
-                }
-        }
-    }
-
-    fun getMembershipById(id: String): CommunityMembershipsTableDTO? {
-        return transaction {
-            CommunityMembershipsTable
-                .select { CommunityMembershipsTable.id eq UUID.fromString(id) }
-                .map { membership ->
-                    CommunityMembershipsTableDTO(
-                        id = membership[CommunityMembershipsTable.id].toString(),
-                        communityId = membership[CommunityMembershipsTable.communityId],
-                        userId = membership[CommunityMembershipsTable.userId].toString(),
-                        status = membership[CommunityMembershipsTable.status]
-                    )
-                }
-                .firstOrNull()
-        }
-    }
-
-    fun createMembership(membership: CommunityMembershipsTableDTO) {
-        transaction {
-            CommunityMembershipsTable.insert {
-                it[id] = UUID.fromString(membership.id)
-                it[communityId] = membership.communityId
-                it[userId] = UUID.fromString(membership.userId)
-                it[status] = membership.status
-                it[createdAt] = LocalDateTime.now()
-                it[updatedAt] = LocalDateTime.now()
-            }
-        }
-    }
-
-    fun updateMembership(membership: CommunityMembershipsTableDTO) {
-        transaction {
-            CommunityMembershipsTable.update({ CommunityMembershipsTable.id eq UUID.fromString(membership.id) }) {
-                it[communityId] = membership.communityId
-                it[userId] = UUID.fromString(membership.userId)
-                it[status] = membership.status
-                it[updatedAt] = LocalDateTime.now()
-            }
-        }
-    }
-
-    fun deleteMembership(id: String) {
-        transaction {
-            CommunityMembershipsTable.deleteWhere { CommunityMembershipsTable.id eq UUID.fromString(id) }
-        }
-    }
-}
