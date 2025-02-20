@@ -5,6 +5,7 @@ import app.flock.social.plugins.configureAuthentication
 import app.flock.social.plugins.configureAutoHeadResponse
 import app.flock.social.plugins.configureCORS
 import app.flock.social.plugins.configureHTTP
+import app.flock.social.plugins.configureLogging
 import app.flock.social.plugins.configureRequestValidation
 import app.flock.social.plugins.configureRouting
 import app.flock.social.plugins.configureSerialization
@@ -29,5 +30,6 @@ fun Application.module() {
     configureAuthentication()
     configureRouting()
     configureSwagger()
+    configureLogging()
     StripeConfig.initialize(EnvConfig.stripeSK)
 }

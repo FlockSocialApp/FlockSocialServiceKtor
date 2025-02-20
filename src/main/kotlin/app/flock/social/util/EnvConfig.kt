@@ -21,7 +21,7 @@ object EnvConfig {
     val supabaseUrl: String = dotenv["SUPABASE_URL"]
     val databaseUrl: String = dotenv["DATABASE_URL"]
     val databaseUser: String = dotenv["DATABASE_USER"]
-    val databasePw: String = dotenv["DATABASE_PASSWORD"]
+    val databasePw: String = if (env == "dev") "" else dotenv["DATABASE_PASSWORD"]
     val jwtSecret: String = dotenv["SUPABASE_JWT_SECRET"]
     val jwtIssuer: String = dotenv["SUPABASE_JWT_ISSUER"]
 }

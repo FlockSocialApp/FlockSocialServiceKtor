@@ -23,7 +23,6 @@ fun Routing.eventsRoute(
                 val entry = eventDao.getEventWithAttendees(
                     eventId.toString()
                 )
-
                 call.respond(
                     entry
                 )

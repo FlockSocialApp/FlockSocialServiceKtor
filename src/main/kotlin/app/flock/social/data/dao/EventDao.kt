@@ -87,15 +87,12 @@ class EventDao {
 
     fun getEventWithAttendees(eventId: String): EventWithAttendees {
         return transaction {
-            // First get the event
             val event = EventsTable
                 .select { EventsTable.id eq UUID.fromString(eventId) }
                 .map { row ->
                     mapRowToEventDTO(row)
                 }
                 .firstOrNull() ?: throw Throwable("Missing Event")
-
-            // Then get all attendees for this event through RSVPs
             val attendees = (UsersTable innerJoin RsvpsTable)
                 .select { RsvpsTable.eventId eq UUID.fromString(eventId) }
                 .map { row ->

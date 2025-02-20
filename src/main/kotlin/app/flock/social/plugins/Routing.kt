@@ -27,7 +27,6 @@ fun Application.configureRouting() {
     val usersDao = UsersDao()
     val bookmarksDao = BookmarkDao()
     val followsDao = FollowsDao()
-//    val logger = LoggerFactory.getLogger(this::class.java)
     val mailingListDao = MailingListDao()
     val membershipsDao = CommunityMembershipsDao()
     routing {

@@ -41,6 +41,7 @@ object DatabaseFactory {
             user = EnvConfig.databaseUser,
             password = EnvConfig.databasePw
         )
+
 //        clearAllTables()
 //        initAndSeedDb(database)
 //        transaction {
@@ -269,12 +270,48 @@ object DatabaseFactory {
                 )
             )
 
-            UsersDao().createUser(
+            usersDao.createUser(
                 UserDTO(
                     id = UUID.randomUUID().toString(),
                     "bryan@flocksocial",
                     "https://picsum.photos/200",
                     "silly juice boy",
+                )
+            )
+
+            usersDao.createUser(
+                UserDTO(
+                    id = UUID.randomUUID().toString(),
+                    "sesamemercat",
+                    "https://picsum.photos/200",
+                    "little sesame cat",
+                )
+            )
+
+            usersDao.createUser(
+                UserDTO(
+                    id = UUID.randomUUID().toString(),
+                    "tofurkeycat",
+                    "https://picsum.photos/200",
+                    "little tofu tofurkeycat",
+                )
+            )
+
+            usersDao.createUser(
+                UserDTO(
+                    id = UUID.randomUUID().toString(),
+                    "porkiepie",
+                    "https://picsum.photos/200",
+                    "little porcini weenie",
+                )
+            )
+
+            usersDao.createUser(
+                UserDTO(
+                    id = UUID.randomUUID().toString(),
+                    "creamcreamsauce",
+                    "https://picsum.photos/200",
+                    "little cremini weenie",
                 )
             )
         }

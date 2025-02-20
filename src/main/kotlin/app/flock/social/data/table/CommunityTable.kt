@@ -15,7 +15,9 @@ data class CommunityDTO(
     val description: String?,
     @SerialName("owner_id")
     val ownerId: String,
-    val requiresApplication: Boolean?
+    val requiresApplication: Boolean,
+    @SerialName("banner_image_url")
+    val bannerImageUrl: String?,
 )
 
 object CommunityTable : Table("communities") {
@@ -23,9 +25,10 @@ object CommunityTable : Table("communities") {
     val displayName = varchar(name = "display_name", length = 255)
     val description = varchar(name = "description", length = 1000).nullable()
     val ownerId = uuid("owner_id").references(UsersTable.id)
-    val requiresApplication = bool("requires_application").nullable()
+    val requiresApplication = bool("requires_application").default(false)
     val createdAt = datetime("created_at").clientDefault { LocalDateTime.now() }
     val updatedAt = datetime("updated_at").clientDefault { LocalDateTime.now() }
+    val bannerImageUrl = varchar("banner_image_url", 255).nullable()
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
@@ -36,4 +39,5 @@ fun mapRowToCommunityDTO(community: ResultRow) = CommunityDTO(
     description = community[CommunityTable.description],
     ownerId = community[CommunityTable.ownerId].toString(),
     requiresApplication = community[CommunityTable.requiresApplication],
+    bannerImageUrl = community[CommunityTable.bannerImageUrl]
 )

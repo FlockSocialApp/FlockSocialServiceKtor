@@ -18,7 +18,7 @@ data class CommunityMembershipsDTO(
     val id: String,
     val communityId: String,
     val userId: String,
-    val status: String,
+    val status: String
 )
 
 /**
@@ -28,9 +28,38 @@ data class CommunityMembershipsDTO(
  */
 @Serializable
 enum class MembershipStatus(val strValue: String) {
+    /**
+     * User is pending review of their application
+     */
     Pending("pending"),
+
+    /**
+     * User application has been reviewed but not accepted into the club yet due to *REASONS*
+     */
+    Waitlisted("waitlisted"),
+
+    /**
+     * User application has been accepted
+     */
     Accepted("accepted"),
+
+    /**
+     * User has been declined
+     */
     Declined("declined"),
+
+    /**
+     * no fuckin clue
+     */
+    Unknown("unknown");
+
+    companion object {
+        fun fromString(str: String): MembershipStatus {
+            return entries.firstOrNull {
+                it.strValue == str
+            } ?: Unknown
+        }
+    }
 }
 
 object CommunityMembershipsTable : Table("community_memberships") {

@@ -2,6 +2,11 @@ package app.flock.social.data.dao
 
 import app.flock.social.data.table.CommunityMembershipsDTO
 import app.flock.social.data.table.CommunityMembershipsTable
+import app.flock.social.data.table.MembershipStatus
+import app.flock.social.data.table.UserDTO
+import app.flock.social.data.table.UsersTable
+import app.flock.social.data.table.mapRowToUserDTO
+import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
@@ -35,13 +40,33 @@ class CommunityMembershipsDao {
         }
     }
 
-    fun getMembershipsForCommunityId(communityId: String): List<CommunityMembershipsDTO> {
+    @Serializable
+    data class CommunityMembershipsResponse(
+        val members: List<UserDTO>,
+        val waitlist: List<UserDTO>,
+        val pending: List<UserDTO>,
+    )
+
+    fun getMembershipsForCommunityId(communityId: String): CommunityMembershipsResponse {
         return transaction {
-            CommunityMembershipsTable
+            val memberships: Map<MembershipStatus, List<UserDTO>> = (CommunityMembershipsTable innerJoin UsersTable)
                 .select { CommunityMembershipsTable.communityId eq UUID.fromString(communityId) }
-                .map { membership ->
-                    mapToCommunityMembershipsDTO(membership)
-                }
+                .map { row ->
+                    val user = mapRowToUserDTO(row)
+                    val membership = mapToCommunityMembershipsDTO(row)
+                    Pair(user, membership)
+                }.groupBy(
+                    keySelector = { (_, membership) -> MembershipStatus.fromString(membership.status) },
+                    valueTransform = {
+                        it.first
+                    }
+                )
+
+            CommunityMembershipsResponse(
+                members = memberships[MembershipStatus.Accepted].orEmpty(),
+                waitlist = memberships[MembershipStatus.Waitlisted].orEmpty(),
+                pending = memberships[MembershipStatus.Pending].orEmpty(),
+            )
         }
     }
 
